@@ -1,0 +1,12 @@
+# Ignore Docker related files
+.dockerignore
+
+# Logs
+logs
+*.log
+*.pid
+
+# Ignore volumes and other temporary Docker directories
+volumes/
+
+

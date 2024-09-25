@@ -1,0 +1,19 @@
+services:
+  soulmask:
+    image: m3thod/soulmask-server-arm64:latest  # Use this name for the built image or pull it if not built
+    container_name: Soulserver
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile  # Path to your Dockerfile for building locally
+    ports:
+      - "27050:27050/udp"
+      - "27051:27051/udp"
+    env_file:
+      - default.env
+    volumes:
+      - soulmask-persistent-data:/home/steam/soulmask
+    stop_grace_period: 90s
+
+volumes:
+  soulmask-persistent-data:
