@@ -1,4 +1,4 @@
-# Soulmask docker dedicated server for ARM64 architecture
+# Soulmask docker dedicated server for ARM64
 
 This repository provides a Docker image for running Soulmask server on ARM64 architecture (tested on Raspberry Pi5)
 As SteamCMD does not support ARM architecture - This is the Way!
@@ -18,7 +18,7 @@ You can install docker on a by refering to these tutorials :
 [Install Docker Desktop on Mac](https://docs.docker.com/desktop/install/mac-install)
 
 
-### The first startup will download the Soulmask server file, which may take a while (depends on your network condition)  
+#### The first startup will download the Soulmask server file, which may take a while (depends on your network condition)  
 
 ## Docker
 
@@ -71,7 +71,7 @@ docker-compose up -d
 docker-compose down --timeout 90
 ```
 
-Build your own Docker image and launch the container:
+Use this if you want to build your own Docker image and launch the container:
 ######
 
 ```bash
@@ -189,18 +189,19 @@ You can list your existing volumes using:
 ```bash
 docker volume ls
 ```
-And inspect the volume to check where it's mounted on the host machine:
+and inspect the volume to check where it is mounted on the host machine:
 
 ```bash
 docker volume inspect soulmask-persistent-data
 ```
 This command will output details about the volume, including the Mountpoint on the host machine (something like /var/lib/docker/volumes/soulmask-persistent-data/_data).
 
-NOTE: It is best to leave managing volumes to Docker. But if you must use bind instead of volume to mount, you need to make sure that on your container host the directory you are bind mounting is owned by 10000:10000 by default (`chown -R 10000:10000 /path/to/directory`). If the ownership of the directory is not correct the container will not start as the server will be unable to persist the savegame.
+> [!NOTE]
+> It is best to leave managing volumes to Docker. But if you must use bind instead of volume to mount, you need to make sure that on your container host the directory you are bind mounting is owned by 10000:10000 by default (`chown -R 10000:10000 /path/to/directory`). If the ownership of the directory is not correct the container will not start as the server will be unable to persist the savegame.
 
 ### Backup
 
-To avoid data loss, consider setting up regular backups for your Docker volumes:
+To avoid data loss, consider setting up regular backups for your Docker volumes
 
 - manual backups
 
