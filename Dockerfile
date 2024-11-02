@@ -1,6 +1,6 @@
 # Use the arm64 architecture
 # Stage 1: FEX Build
-FROM ubuntu:22.04 as fex_build
+FROM ubuntu:22.04 AS fex_build
 
 # Add necessary architecture and update the package list
 RUN dpkg --add-architecture arm64 && \
@@ -85,7 +85,7 @@ ENV STEAM_SDK64_PATH="~/.steam/sdk64"
 ENV STEAM_APP_ID="3017300"
 
 ENV GAME_PORT="27050"
-ENV QUERY_PORT="27051"
+ENV QUERY_PORT="27015"
 ENV SERVER_SLOTS="20"
 ENV LISTEN_ADDRESS="0.0.0.0"
 ENV SERVER_LEVEL="Level01_Main"
@@ -102,7 +102,8 @@ RUN mkdir -p ${SOULMASK_PATH} \
     && echo "${CONTAINER_UID}:${CONTAINER_GID}" > /home/steam/expected_filesystem_permissions
 
 USER root
-RUN chown steam:steam /home/steam/entrypoint.sh && \
+RUN chown -R steam:steam /home/steam/ && \
+    chown steam:steam /home/steam/entrypoint.sh && \
     chmod +x /home/steam/entrypoint.sh
     
 USER steam
