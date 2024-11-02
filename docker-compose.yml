@@ -14,6 +14,12 @@ services:
     volumes:
       - soulmask-persistent-data:/home/steam/soulmask
     stop_grace_period: 90s
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q \"REGISTER SERVER ERROR\" /home/steam/soulmask/WS/Saved/Logs/WS.log || exit 1"]
+      interval: 1m  # Check every 1 minute
+      timeout: 10s  # Wait for 10 seconds before considering the health check failed
+      retries: 3  # Allow 3 retries before considering the container unhealthy
+      start_period: 30s  # Initial delay before starting health checks
 
 volumes:
   soulmask-persistent-data:
