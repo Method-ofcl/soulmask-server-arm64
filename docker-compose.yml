@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile  # Path to your Dockerfile for building locally
     ports:
       - "27050:27050/udp"
-      - "27051:27051/udp"
+      - "27015:27015/udp"
     env_file:
       - default.env
     volumes:
