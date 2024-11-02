@@ -141,17 +141,19 @@ ${SOULMASK_PATH}/WSServer.sh ${LAUNCH_ARGS} &
 init_pid=$!
 
 # Capture Soulmask server binary pid 
-# NOTE! In some cases the process might be named 'WSServer-Linux' or 'exe' insted of 'FEXInterpreter'
 timeout=0
-while [ $timeout -lt 30 ]; do
-    if ps -e | grep "FEXInterpreter"; then
-        soulmask_pid=$(ps -e | grep "FEXInterpreter" | awk '{print $1}')
+while [ $timeout -lt 10 ]; do
+    # Try using pgrep with full command or binary name
+    soulmask_pid=$(pgrep -f "/home/steam/soulmask/WSServer.sh" | head -n 1)
+    if [ -n "$soulmask_pid" ]; then
+        echo "$(timestamp) INFO: Soulmask server process found (PID: $soulmask_pid)."
+        echo ""
         break
-    elif [ $timeout -eq 29 ]; then
-        echo "$(timestamp) ERROR: Timed out waiting for FEXInterpreter (WSServer-Linux) to be running"
+    elif [ $timeout -eq 9 ]; then
+        echo "$(timestamp) ERROR: Timed out waiting for WSServer (WSServer.sh) to be running"
         exit 1
     fi
-    sleep 20
+    sleep 7
     ((timeout++))
 done
 
