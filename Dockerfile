@@ -41,6 +41,7 @@ RUN apt-get update && \
     libglfw3-dev \
     libepoxy-dev \
     sudo \
+    nano \
     curl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
