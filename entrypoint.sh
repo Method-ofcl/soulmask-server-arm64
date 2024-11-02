@@ -161,8 +161,10 @@ done
 wait $init_pid
 
 # Handle post SIGTERM from here
-# Hold us open until FEXInterpreter pid closes, indicating full shutdown, then go home
+# Hold us open until WSServer pid closes, indicating full shutdown, then go home
+echo "$(timestamp) INFO: Waiting for Soulmask process (PID: $soulmask_pid) to finish..."
 tail --pid=$soulmask_pid -f /dev/null
+echo "$(timestamp) INFO: Soulmask process (PID: $soulmask_pid) has exited. Container will stop now."
 
 # o7
 echo "$(timestamp) INFO: Shutdown complete. Goodbye, Chieftan."
