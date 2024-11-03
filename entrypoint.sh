@@ -61,18 +61,30 @@ fi
 
 rm "${SOULMASK_PATH}/test"
 
-# Install/Update Soulmask
+# ---Install/Update Soulmask---
+# Retry SteamCMD update if it fails
+max_retries=5
+retry_delay=60  # Delay in seconds between retries
+retry_count=0
+
 echo "$(timestamp) INFO: Updating Soulmask Dedicated Server"
 echo ""
-${STEAMCMD_PATH}/steamcmd.sh +force_install_dir "${SOULMASK_PATH}" +login anonymous +app_update ${STEAM_APP_ID} validate +quit
-echo ""
+while [ $retry_count -lt $max_retries ]; do
+    ${STEAMCMD_PATH}/steamcmd.sh +force_install_dir "${SOULMASK_PATH}" +login anonymous +app_update ${STEAM_APP_ID} validate +quit
+    if [ $? -eq 0 ]; then
+        echo "$(timestamp) INFO: SteamCMD update of Soulmask successful"
+        break
+    else
+        echo "$(timestamp) WARN: SteamCMD update of Soulmask failed, retrying in $retry_delay seconds... ($retry_count/$max_retries)"
+        retry_count=$((retry_count+1))
+        sleep $retry_delay
+    fi
+done
 
-# Check that steamcmd was successful
-if [ $? != 0 ]; then
-    echo "$(timestamp) ERROR: steamcmd was unable to successfully initialize and update Soulmask"
+# Exit if max retries exceeded
+if [ $retry_count -ge $max_retries ]; then
+    echo "$(timestamp) ERROR: SteamCMD update failed after $max_retries attempts. Exiting."
     exit 1
-else
-    echo "$(timestamp) INFO: steamcmd update of Soulmask successful"
 fi
 
 # Verify if WSServer.sh exists
