@@ -32,14 +32,16 @@ docker run \
   --restart unless-stopped \
   --mount type=volume,source=soulmask-persistent-data,target=/home/steam/soulmask \
   --publish 27050:27050/udp \
-  --publish 27051:27051/udp \
+  --publish 27015:27015/udp \
+  --publish 18888:18888/tcp \
   --env=SERVER_NAME='Soulmask Containerized Server' \
   --env=GAME_MODE='pve' \
   --env=SERVER_SLOTS=20 \
   --env=SERVER_PASSWORD='PleaseChangeMe' \
   --env=ADMIN_PASSWORD='AdminPleaseChangeMe' \
   --env=GAME_PORT=27050 \
-  --env=QUERY_PORT=27051 \
+  --env=QUERY_PORT=27015 \
+  --env=ECHO_PORT=18888 \
   --env=LISTEN_ADDRESS='0.0.0.0' \
   --stop-timeout 90 \
   m3thod/soulmask-server-arm64:latest
@@ -90,12 +92,19 @@ services:
       dockerfile: Dockerfile  # Path to your Dockerfile for building locally
     ports:
       - "27050:27050/udp"
-      - "27051:27051/udp"
+      - "27015:27015/udp"
+      - "18888:18888/tcp"
     env_file:
       - default.env
     volumes:
       - soulmask-persistent-data:/home/steam/soulmask
     stop_grace_period: 90s
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q \"REGISTER SERVER ERROR\" /home/steam/soulmask/WS/Saved/Logs/WS.log || exit 1"]
+      interval: 1m  # Check every 1 minute
+      timeout: 10s  # Wait for 10 seconds before considering the health check failed
+      retries: 3  # Allow 3 retries before considering the container unhealthy
+      start_period: 30s  # Initial delay before starting health checks
 
 volumes:
   soulmask-persistent-data:
@@ -138,7 +147,8 @@ Game ports are arbitrary. You can use which ever values you want above 1000. Mak
 | Port | Description | Protocol | Default |
 | ---- | ----------- | -------- | --------|
 | Game Port | Port for client connections, should be value above 1000 | UDP | 27050 |
-| Query Port | Port for server browser queries, should be a value above 1000 | UDP | 27051 |
+| Query Port | Port for server browser queries, should be a value above 1000 | UDP | 27015 |
+| Echo Port | It is optional. Port used for telnet | TCP | 18888 |
 
 
 default.env file:
@@ -148,7 +158,8 @@ GAME_MODE="pve"
 SERVER_PASSWORD="ChangeMePlease"
 ADMIN_PASSWORD="AdminChangeMePlease"
 GAME_PORT="27050"
-QUERY_PORT="27051"
+QUERY_PORT="27015"
+ECHO_PORT="18888"
 SERVER_SLOTS="20"
 LISTEN_ADDRESS="0.0.0.0"
 BACKUP=900
@@ -165,7 +176,8 @@ SAVING=600
 | ADMIN_PASSWORD | Password for GM admin on server | AdminPleaseChangeMe | False |
 | SERVER_LEVEL | Level for server to load. Currently there is only 1 so no need to change | Level01_Main | False |
 | GAME_PORT | Port for server connections | 27050 | False |
-| QUERY_PORT | Port for steam query of server | 27051 | False |
+| QUERY_PORT | Port for steam query of server | 27015 | False |
+| ECHO_PORT | Port used for telnet | 18888 | False |
 | SERVER_SLOTS | Number of slots for connections (Max 70) | 20 | False |
 | BACKUP | Specifies the interval for writing the game database to disk (unit: seconds) | 900 | False |
 | SAVING | Specifies the interval for writing game objects to the database (unit: seconds) | 600 | False |
@@ -213,7 +225,7 @@ docker run --rm -v soulmask-persistent-data:/data -v $(pwd):/backup busybox tar 
 
 ### Connectivity
 
-You need to make sure that the ports 27050 UDP and 27051 UDP (or whichever ones you decide to use) are open on your router as well as the container host where this container image is running. You will also have to port-forward the game-port and query-port from your router to the private IP address of the container host where this image is running.
+You need to make sure that the ports 27050 UDP and 27015 UDP (or whichever ones you decide to use) are open on your router as well as the container host where this container image is running. You will also have to port-forward the game-port and query-port from your router to the private IP address of the container host where this image is running.
 
 Credits
 =============
