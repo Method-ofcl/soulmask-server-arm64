@@ -28,7 +28,7 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=Tr
 RUN ninja
 
 # Stage 2: Steam Build
-FROM ubuntu:22.04 as steam_build
+FROM ubuntu:22.04 AS steam_build
 
 # Copy FEX binaries from the FEX Build stage
 COPY --from=fex_build /opt/FEX/build/Bin/* /usr/bin/
