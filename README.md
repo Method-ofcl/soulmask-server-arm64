@@ -11,7 +11,7 @@ As SteamCMD does not support ARM architecture - This is the Way!
 - A machine or environment with ARM64 architecture support.
 - Docker installed on your ARM64 system.
 
-You can install docker on a by refering to these tutorials :
+You can install docker on a by refering to these tutorials:
 
 [Install Docker Desktop on Linux](https://docs.docker.com/desktop/install/linux-install)
 
@@ -79,6 +79,13 @@ Use this if you want to build your own Docker image and launch the container:
 ```bash
 docker-compose up --build -d
 ```
+
+To see the server logs use:
+
+```bash
+docker logs <container ID>
+```
+
 
 docker-compose.yml file:
 ```yml
@@ -148,7 +155,16 @@ Game ports are arbitrary. You can use which ever values you want above 1000. Mak
 | ---- | ----------- | -------- | --------|
 | Game Port | Port for client connections, should be value above 1000 | UDP | 27050 |
 | Query Port | Port for server browser queries, should be a value above 1000 | UDP | 27015 |
-| Echo Port | It is optional. Port used for telnet | TCP | 18888 |
+| Echo Port | It is optional. Maintenance port, used for local telnet server maintenance, TCP, does not need to be open. | TCP | 18888 |
+
+#### Echo Port
+
+The maintenance port is a simple way to maintain the server, specified through the command line parameter: -EchoPort. During server operation, use a Telnet tool to connect to the maintenance port as follows:
+
+- Execute the Windows run command: telnet 127.0.0.1 18888
+- Upon entering the telnet interface, type help to view the available maintenance commands for the server.
+- To shut down the server after 30 seconds, enter: quit 30
+- To save, enter: saveworld 1
 
 
 default.env file:
@@ -177,7 +193,7 @@ SAVING=600
 | SERVER_LEVEL | Level for server to load. Currently there is only 1 so no need to change | Level01_Main | False |
 | GAME_PORT | Port for server connections | 27050 | False |
 | QUERY_PORT | Port for steam query of server | 27015 | False |
-| ECHO_PORT | Port used for telnet | 18888 | False |
+| ECHO_PORT | Maintenance port, used for local telnet server maintenance, TCP, does not need to be open. | 18888 | False |
 | SERVER_SLOTS | Number of slots for connections (Max 70) | 20 | False |
 | BACKUP | Specifies the interval for writing the game database to disk (unit: seconds) | 900 | False |
 | SAVING | Specifies the interval for writing game objects to the database (unit: seconds) | 600 | False |
@@ -221,6 +237,25 @@ Use the docker run command to copy volume data to a tarball:
 
 ```bash
 docker run --rm -v soulmask-persistent-data:/data -v $(pwd):/backup busybox tar cvf /backup/soulmask_backup.tar /data
+```
+
+If you wish to restore gamedata from a backup file use the following command (the container must be stopped when restoring the data):
+
+```bash
+docker run --rm -v soulmask-persistent-data:/data -v $(pwd):/backup busybox tar xvf /backup/soulmask_backup.tar -C /
+```
+When finished start the container again.
+
+### Server update
+
+When you see that there is a new version of Soulmask released the simplest method to update your server is to stop the container and start it again. It will automaticaly update the game server upon start.
+
+```bash
+docker stop <container ID or its name eg. Soulserver>
+```
+
+```bash
+docker start <container ID or its name eg. Soulserver>
 ```
 
 ### Connectivity
