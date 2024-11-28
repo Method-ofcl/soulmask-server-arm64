@@ -161,7 +161,7 @@ Game ports are arbitrary. You can use which ever values you want above 1000. Mak
 
 The maintenance port is a simple way to maintain the server, specified through the command line parameter: -EchoPort. During server operation, use a Telnet tool to connect to the maintenance port as follows:
 
-- Execute the Windows run command: telnet 127.0.0.1 18888
+- Execute the run command: telnet 127.0.0.1 18888
 - Upon entering the telnet interface, type help to view the available maintenance commands for the server.
 - To shut down the server after 30 seconds, enter: quit 30
 - To save, enter: saveworld 1
@@ -186,7 +186,7 @@ SAVING=600
 
 | Name | Description | Default | Required |
 | ---- | ----------- | ------- | -------- |
-| SERVER_NAME | Name for the Server | Enshrouded Containerized | False |
+| SERVER_NAME | Name for the Server | Soulserver | False |
 | GAME_MODE | Set server to either 'pve' or 'pvp' | None | True |
 | SERVER_PASSWORD | Password for the server | PleaseChangeMe | False |
 | ADMIN_PASSWORD | Password for GM admin on server | AdminPleaseChangeMe | False |
@@ -227,7 +227,7 @@ This command will output details about the volume, including the Mountpoint on t
 > [!NOTE]
 > It is best to leave managing volumes to Docker. But if you must use bind instead of volume to mount, you need to make sure that on your container host the directory you are bind mounting is owned by 10000:10000 by default (`chown -R 10000:10000 /path/to/directory`). If the ownership of the directory is not correct the container will not start as the server will be unable to persist the savegame.
 
-### Backup
+### Backup server game data
 
 To avoid data loss, consider setting up regular backups for your Docker volumes
 
@@ -238,8 +238,9 @@ Use the docker run command to copy volume data to a tarball:
 ```bash
 docker run --rm -v soulmask-persistent-data:/data -v $(pwd):/backup busybox tar cvf /backup/soulmask_backup.tar /data
 ```
+### Restore server game data
 
-If you wish to restore gamedata from a backup file use the following command (the container must be stopped when restoring the data):
+If you wish to restore game data from a backup file use the following command (the container must be stopped when restoring the data):
 
 ```bash
 docker run --rm -v soulmask-persistent-data:/data -v $(pwd):/backup busybox tar xvf /backup/soulmask_backup.tar -C /
@@ -248,7 +249,7 @@ When finished start the container again.
 
 ### Server update
 
-When you see that there is a new version of Soulmask released the simplest method to update your server is to stop the container and start it again. It will automaticaly update the game server upon start.
+When there is a new version of Soulmask released the simplest method to update your server is to stop the container and start it again. It will automaticaly update the game server upon start.
 
 ```bash
 docker stop <container ID or its name eg. Soulserver>
