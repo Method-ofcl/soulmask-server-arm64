@@ -101,10 +101,14 @@ fi
 
 # Build launch arguments
 echo "$(timestamp) INFO: Constructing launch arguments"
-LAUNCH_ARGS="${SERVER_LEVEL} -server -SILENT -SteamServerName=${SERVER_NAME} -${GAME_MODE} -MaxPlayers=${SERVER_SLOTS} -backup=${BACKUP} -saving=${SAVING} -log -UTF8Output -MULTIHOME=${LISTEN_ADDRESS} -Port=${GAME_PORT} -QueryPort=${QUERY_PORT} -EchoPort=${ECHO_PORT} -online=Steam -forcepassthrough -adminpsw=${ADMIN_PASSWORD}"
+LAUNCH_ARGS="${SERVER_LEVEL} -server -SILENT -SteamServerName=\"${SERVER_NAME}\" -${GAME_MODE} -MaxPlayers=${SERVER_SLOTS} -backup=${BACKUP} -saving=${SAVING} -log -UTF8Output -MULTIHOME=${LISTEN_ADDRESS} -Port=${GAME_PORT} -QueryPort=${QUERY_PORT} -EchoPort=${ECHO_PORT} -online=Steam -forcepassthrough"
 
 if [ -n "${SERVER_PASSWORD}" ]; then
-    LAUNCH_ARGS="${LAUNCH_ARGS} -PSW=${SERVER_PASSWORD}"
+    LAUNCH_ARGS="${LAUNCH_ARGS} -PSW=\"${SERVER_PASSWORD}\""
+fi
+
+if [ -n "${ADMIN_PASSWORD}" ]; then
+    LAUNCH_ARGS="${LAUNCH_ARGS} -adminpsw=\"${ADMIN_PASSWORD}\""
 fi
 
 
