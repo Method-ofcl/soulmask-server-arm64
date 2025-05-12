@@ -35,15 +35,20 @@ COPY --from=fex_build /opt/FEX/build/Bin/* /usr/bin/
 
 # Install additional dependencies
 RUN dpkg --add-architecture arm64
-RUN apt-get update && \
-    apt-get install -y \
-    libcap-dev \
-    libglfw3-dev \
-    libepoxy-dev \
-    sudo \
-    nano \
-    curl && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y \
+        libcap-dev \
+        libglfw3-dev \
+        libepoxy-dev \
+        sudo \
+        nano \
+        procps \
+        locales \
+        curl \
+    && echo 'LANG="en_US.UTF-8"' > /etc/default/locale \
+    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+    && locale-gen \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create steam user
 RUN useradd -m -s /bin/bash steam
