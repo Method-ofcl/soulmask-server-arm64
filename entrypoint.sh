@@ -5,10 +5,10 @@ timestamp () {
   date +"%Y-%m-%d %H:%M:%S,%3N"
 }
 
-# Function to handle shutdown when sigterm is recieved
+# Function to handle shutdown when sigterm is received
 shutdown () {
     echo ""
-    echo "$(timestamp) INFO: Recieved SIGTERM, shutting down gracefully"
+    echo "$(timestamp) INFO: Received SIGTERM, shutting down gracefully"
     kill -2 $soulmask_pid
 }
 
@@ -32,10 +32,14 @@ fi
 if [ -z "$ADMIN_PASSWORD" ]; then
     echo "$(timestamp) WARN: ADMIN_PASSWORD not set, using default: AdminPleaseChangeMe"
     ADMIN_PASSWORD="AdminPleaseChangeMe"
+else
+    echo "$(timestamp) INFO: Admin password set."
 fi
 
 if [ -z "$SERVER_PASSWORD" ]; then
     echo "$(timestamp) WARN: SERVER_PASSWORD not set, server will be open to the public"
+else
+    echo "$(timestamp) INFO: Server password set."
 fi
 
 if [ -z "$GAME_MODE" ]; then
@@ -179,5 +183,5 @@ tail --pid=$soulmask_pid -f /dev/null
 echo "$(timestamp) INFO: Soulmask process (PID: $soulmask_pid) has exited. Container will stop now."
 
 # o7
-echo "$(timestamp) INFO: Shutdown complete. Goodbye, Chieftan."
+echo "$(timestamp) INFO: Shutdown complete. Goodbye, Chieftain."
 exit 0
