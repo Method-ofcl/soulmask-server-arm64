@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#This is experimental as Soulmask does not accept all languagues. If you don't know what the code for your language is you can check it here: https://simplelocalize.io/data/locales/
+#You should also change it in the dockerfile so it match 
+export LANG=en_US.UTF-8
+
+#Here you can set up your timezone
+export TZ=Europe/London
+
 # Quick function to generate a timestamp
 timestamp () {
   date +"%Y-%m-%d %H:%M:%S,%3N"
